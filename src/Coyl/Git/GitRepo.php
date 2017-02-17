@@ -46,7 +46,8 @@ class GitRepo
             $repo = new self($repoPath, true, false);
             if (is_string($source)) {
                 if ($remoteSource) {
-                    if (!is_dir($reference) || !is_dir($reference . '/.git')) {
+                    // check for reference repository
+                    if (is_dir($reference) && !is_dir($reference . '/.git')) {
                         throw new GitException('"' . $reference . '" is not a git repository. Cannot use as reference.');
                     } else if (strlen($reference)) {
                         $reference = realpath($reference);
