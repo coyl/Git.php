@@ -47,7 +47,7 @@ class GitRepo
             if (is_string($source)) {
                 if ($remoteSource) {
                     // check for reference repository
-                    if (is_dir($reference) && !is_dir($reference . '/.git')) {
+                    if (!is_dir($reference) || !is_dir($reference . '/.git')) {
                         throw new GitException('"' . $reference . '" is not a git repository. Cannot use as reference.');
                     } else if (strlen($reference)) {
                         $reference = realpath($reference);
@@ -58,7 +58,7 @@ class GitRepo
                     $repo->cloneFrom($source, $commandString);
                 }
             } else {
-                $repo->run('create');
+                $repo->run('init .');
             }
             return $repo;
         }
@@ -124,7 +124,7 @@ class GitRepo
                         if ($create_new) {
                             $this->repoPath = $repo_path;
                             if ($_init) {
-                                $this->run('create');
+                                $this->run('init .');
                             }
                         } else {
                             throw new GitException(sprintf('"%s" is not a git repository', $repo_path));
@@ -138,7 +138,7 @@ class GitRepo
                     if ($parent = realpath(dirname($repo_path))) {
                         mkdir($repo_path);
                         $this->repoPath = $repo_path;
-                        if ($_init) $this->run('create');
+                        if ($_init) $this->run('init .');
                     } else {
                         throw new GitException('cannot create repository in non-existent directory');
                     }
